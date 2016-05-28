@@ -1,0 +1,7 @@
+   1 hello   start
+   2         entry go
+   3         extrn print
+   4 go      = <Print 'Hello World!'>
+   5         end
+mod_name = HELLO       mod_length(lines) = 5
+                       obj_length(bytes) = 32

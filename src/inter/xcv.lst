@@ -1,0 +1,24 @@
+   1 cv start
+   2    entry CVB,cvd
+   3    extrn NUMB,SYMB
+   4    extrn ADD,MUL,DR,DRn
+   5 CVB  '-' V(D)X = '-' K/cvb0/ VX.
+   6      '+' V(D)X =     K/cvb0/ VX.
+   7          E(D)X =     K/cvb0/ EX.
+   8 cvb0 VX s1s2s3s4s5s6s7s8s9 =  +
+   9         <ADD (<MUL (<cvb0 VX>) /59//10144256/>) +
+  10         <NUMB s1s2s3s4s5s6s7s8s9> >
+  11      Ex = k/numb/Ex.
+  12 
+  13 cvd  '-' V(N)X = '-' K/cvd0/ VX.
+  14      '+' V(N)X =     K/cvd0/ VX.
+  15          E(N)X =     K/cvd0/ EX.
+  16 cvd0 EX = k/cvd1/ k/DRn/ (EX) /59//10144256/..
+  17 cvd1
+  18      (ey)  = k/symb/ ey.
+  19      EX (EY)  = k/cvd0/ EX. k/cvd2/ k/SYMB/ EY..
+  20 cvd2 s1s2s3s4s5s6s7s8s9 = s1s2s3s4s5s6s7s8s9
+  21      EX = k/cvd2/ '0'EX.
+  22  end
+mod_name = CV          mod_length(lines) = 22
+                       obj_length(bytes) = 434
