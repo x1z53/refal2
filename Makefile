@@ -3,11 +3,11 @@ VERSION := $(shell cat Version.txt)
 TSTAMP := $(shell date "+%Y%m%d")
 
 ifeq ($(MACHINE), x86_64)
-lib = lib64
-ACFLAGS = -m32
-AAFLAGS = --32
+  lib = lib64
+  ACFLAGS = -m32
+  AAFLAGS = --32
 else
-lib = lib
+  lib = lib
 endif
 
 prefix=/usr
@@ -15,9 +15,15 @@ bindir=$(prefix)/bin
 libdir=$(prefix)/$(lib)
 CC = gcc
 AR = ar
-CDEBUG = -g -DNO_DEBUG
+ifdef DEBUG
+  CDEBUG = -g
+  RFMAIN = rfdbg.o
+else
+  CDEBUG = -g -DNO_DEBUG
+  RFMAIN = mainrf.o
+endif
 COPT = -O0
-CFLAGS = -pipe -w $(COPT) $(CDEBUG) $(ACFLAGS)
+CFLAGS = -pipe -w $(COPT) $(CDEBUG) $(ACFLAGS) -Isrc/inter
 ASFLAGS =  $(AAFLAGS)
 CCOMP = $(wildcard src/comp/*.c)
 CINTR = $(wildcard src/inter/*.c)
@@ -25,7 +31,7 @@ RTEST = $(wildcard tests/*.ref)
 OCOMP = $(CCOMP:.c=.o)
 OINTR = $(CINTR:.c=.o) src/inter/xcv.o
 
-lib/%.o: src/inter/%.o
+lib/%.o: src/main/%.o
 	cp -a $< $@
 
 %.s:	%.asm
@@ -35,7 +41,7 @@ lib/%.o: src/inter/%.o
 	./bin/refal2 $<
 
 %.exe:	%.s lib/librefal2.a
-	$(CC) $(CFLAGS) $< -o $@ -Llib -lrefal2
+	$(CC) $(CFLAGS) $< lib/$(RFMAIN) -o $@ -Llib -lrefal2
 
 all:	bin/refal2 lib/librefal2.a lib/mainrf.o lib/rfdbg.o
 
