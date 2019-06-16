@@ -129,7 +129,7 @@ char regnom[]="000";
 int rn[]={1,2,3,4,5,6,7,8,9,0};
 
 /* BLF */
-char vers_i[]="Refal-2  version 0.2.3-20050529 (c) Refal-2 Team";
+char vers_i[]="Refal-2  version 0.2.3-20190616 (c) Refal-2 Team";
 
 char mod_i[13];   /* 8+4+1 (xxxxxxxx.yyy0) */
 int lbl_leng;
