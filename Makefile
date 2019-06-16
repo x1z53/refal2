@@ -1,33 +1,61 @@
-#############################################################################
-# Makefile
-#       Makefile for building refal2 system
-#       for UNIX ( FreeBSD, Linux )
-#
-# Copyright (C) Refal-2 Team
-# Author: Leonid Belous (aka BLF)
-# E-mail: belous@ilt.kharkov.ua
-# Date: 28.05.2005
-#############################################################################
+MACHINE := $(shell uname -m)
+VERSION := $(shell cat Version.txt)
+TSTAMP := $(shell date "+%Y%m%d")
 
-MAKE	=	make
+ifeq ($(MACHINE), x86_64)
+lib = lib64
+ACFLAGS = -m32
+AAFLAGS = --32
+else
+lib = lib
+endif
 
-all:
+prefix=/usr
+bindir=$(prefix)/bin
+libdir=$(prefix)/$(lib)
+CC = gcc
+AR = ar
+CDEBUG = -g -DNO_DEBUG
+COPT = -O0
+CFLAGS = -pipe -w $(COPT) $(CDEBUG) $(ACFLAGS)
+ASFLAGS =  $(AAFLAGS)
+CCOMP = $(wildcard src/comp/*.c)
+CINTR = $(wildcard src/inter/*.c)
+RTEST = $(wildcard tests/*.ref)
+OCOMP = $(CCOMP:.c=.o)
+OINTR = $(CINTR:.c=.o) src/inter/xcv.o
 
-# PHASE I:
-# Make the compiler from refal-2 language, 
-# result bin/refal2 executable module
-	
-	$(MAKE) -f src/comp/comp.mak
+lib/%.o: src/inter/%.o
+	cp -a $< $@
 
-# PHASE II:
-# Make the interpreter from "jazyk sborki",  
-# result lib/librefal2.a - set of object modules.
-# Empty  lib/libr2user.a also created.
-	
-	$(MAKE) -f src/inter/inter.mak
+%.s:	%.asm
+	cp -a $< $@
 
-# Remove intermediate files
+%.asm:	%.ref bin/refal2
+	./bin/refal2 $<
 
-#	./delbin
+%.exe:	%.s lib/librefal2.a
+	$(CC) $(CFLAGS) $< -o $@ -Llib -lrefal2
 
-#### end of Makefile
+all:	bin/refal2 lib/librefal2.a lib/mainrf.o lib/rfdbg.o
+
+bin/refal2:	$(OCOMP)
+	$(CC) $(CFLAGS) -o $@ $?
+
+lib/librefal2.a:	$(OINTR)
+	ar rcs $@ $?
+
+install: all
+	install -D bin/refal2 $(bindir)/refal2
+	install -d $(libdir)
+	install lib/* $(libdir)/
+
+test:	$(RTEST:.ref=.exe)
+	for N in tests/*.exe; do echo -e "\n\t::: $$N"; { echo 7; echo 20; echo 0; } | $$N; done
+
+dist:	clean
+	tar czvf refal2-$(VERSION)-$(TSTAMP)-unix-src.tgz --transform=s,^,refal2-$(VERSION)-$(TSTAMP)/, *
+
+clean:
+	rm -rf lib/* bin/*
+	for e in tgz o S asm a s lst log; do find . -name \*.$$e -exec rm {} \; ; done

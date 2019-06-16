@@ -1,5 +1,0 @@
-
-Refal-2  version 0.2.3-20050529 (c) Refal-2 Team
-tests/hello.ref:
-mod_name = HELLO       mod_length(lines) = 5
-                       obj_length(bytes) = 32
