@@ -1,15 +1,8 @@
 MACHINE := $(shell uname -m)
-ifndef SYSTEM
-  VERSION := $(shell cat Version.txt)
-  TSTAMP := $(shell date "+%Y%m%d")
-endif
+VERSION := $(shell cat Version.txt)
+TSTAMP := $(shell date "+%Y%m%d")
 
-ifeq ($(MACHINE), x86_64)
-  ACFLAGS = -m32
-  AAFLAGS = --32
-endif
-
-prefix=/usr
+prefix=dist
 bindir=$(prefix)/bin
 libdir=$(prefix)/lib
 includedir=$(prefix)/include
@@ -18,25 +11,19 @@ datadir=$(prefix)/share
 CC = gcc
 AR = ar
 
-ifdef DEBUG
-  CDEBUG = -g
-  RFMAIN = rfdbg.o
-else
-  CDEBUG = -g -DNO_DEBUG
-  RFMAIN = mainrf.o
+CSPECIAL = -DNO_DEBUG -Isrc/inter
+
+ifdef FASM
+CSPECIAL += -DFASM
+TOEXE = -dynamic-linker /lib/ld-linux.so.2 /usr/lib/crt1.o /usr/lib/crti.o /usr/lib/crtn.o -lc
 endif
 
-ifdef SYSTEM
-  RINCLUDE = $(includedir)/refal2
-  RLIB = $(libdir)
-else
-  RINCLUDE = src/inter
-  RLIB = lib
+OPTFLAGS = -pipe -O0 -w
+ifeq ($(MACHINE), x86_64)
+OPTFLAGS += -m32
 endif
+CFLAGS += $(OPTFLAGS) $(CSPECIAL)
 
-COPT = -O0 -w
-CFLAGS = -pipe $(COPT) $(CDEBUG) $(ACFLAGS) -I$(RINCLUDE)
-ASFLAGS =  $(AAFLAGS)
 CCOMP = $(wildcard src/comp/*.c)
 CINTR = $(wildcard src/inter/*.c)
 RTEST = $(wildcard tests/*.ref)
@@ -47,14 +34,23 @@ lib/%.o: src/main/%.o
 	mkdir -p lib
 	cp -a $< $@
 
-%.s:	%.asm
-	cp -a $< $@
+ifdef FASM
+%.o:	%.asm
+	fasm $< $@
+else
+%.o:	%.asm
+	$(CC) -c $(CFLAGS) -x assembler $< -o $@
+endif
 
 %.asm:	%.ref
-	PATH=$$PATH:bin refal2 $<
+	bin/refal2 $<
 
-%.exe:	%.s
-	$(CC) $(CFLAGS) $< $(RLIB)/$(RFMAIN) -o $@ -L$(RLIB) -lrefal2
+%.exe:	%.o
+ifdef FASM
+	ld $< -o $@ lib/mainrf.o -Llib -lrefal2 $(TOEXE)
+else
+	$(CC) $(CFLAGS) $< -o $@ lib/mainrf.o -Llib -lrefal2
+endif
 
 .ONESHELL:
 
@@ -63,18 +59,35 @@ all:	bin/refal2 lib/librefal2.a lib/mainrf.o lib/rfdbg.o r2compile r2run r2debug
 r2compile:
 	cat <<- EOF > $@
 		#!/bin/sh
+		case "\$$0" in
+		 .*) LIBDIR=\$${LIBDIR:-\$$(pwd)/lib}; export PATH=\$$PATH:\$$(pwd)/bin ;;
+		  *) LIBDIR=\$${LIBDIR:-/usr/lib};;
+		esac
 		N=\$$(basename \$$1)
 		P=\$${N%.*}
 		cd \$$(dirname \$$1)
-		make -f $(datadir)/refal2/Makefile SYSTEM=1 \$$P.exe
+		refal2 \$$N
 	EOF
+ifdef FASM
+	cat <<- EOF >> $@
+		fasm \$$P.asm \$$P.o && rm \$$P.asm
+		ld \$$P.o -o \$$P \$$LIBDIR/mainrf.o -L\$$LIBDIR -lrefal2 $(TOEXE) && rm \$$P.o
+	EOF
+else
+	cat <<- EOF >> $@
+		$(CC) $(OPTFLAGS) -o \$$P -x assembler \$$P.asm -x none \$$LIBDIR/mainrf.o -L\$$LIBDIR -lrefal2 && rm \$$P.asm
+	EOF
+endif
+	chmod +x $@
 
 r2run:	r2compile
 	cp $< $@
-	echo './$$P.exe' >> $@
+	echo './$$P' >> $@
+	chmod +x $@
 
 r2debug:	r2run
-	sed 's/SYSTEM=1/SYSTEM=1 DEBUG=1/' < $< > $@
+	sed 's/mainrf.o/rfdbg.o/g' < $< > $@
+	chmod +x $@
 
 bin/refal2:	$(OCOMP)
 	mkdir -p bin
@@ -90,7 +103,6 @@ install: all
 	install -d $(libdir) $(includedir)
 	install lib/* $(libdir)/
 	install src/inter/*.def $(includedir)/
-	install -D Makefile $(datadir)/refal2/Makefile
 
 test:	$(RTEST:.ref=.exe)
 	for N in tests/*.exe; do echo -e "\n\t::: $$N"; { echo 7; echo 20; echo 0; } | $$N; done
