@@ -15,7 +15,7 @@ CSPECIAL = -DNO_DEBUG -Isrc/inter
 
 ifdef FASM
 CSPECIAL += -DFASM
-TOEXE = -dynamic-linker /lib/ld-linux.so.2 /usr/lib/crt1.o /usr/lib/crti.o /usr/lib/crtn.o -lc
+TOEXE = -melf_i386 -dynamic-linker /lib/ld-linux.so.2 /usr/lib/crt1.o /usr/lib/crti.o /usr/lib/crtn.o -lc
 endif
 
 OPTFLAGS = -pipe -O0 -w
