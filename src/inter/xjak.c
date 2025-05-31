@@ -8,8 +8,13 @@
 extern REFAL refal;
 
 #define N_SWAP 0116
+
+void rftpl(linkcb *, linkcb *, linkcb *);
+void rfdel(linkcb *, linkcb *);
+int  lcopy(linkcb *, linkcb *, linkcb *);
+int  lins(linkcb *, int);
      
-static enter(emp,pp,rp)  int emp;  linkcb **pp,**rp; {
+static int enter(emp,pp,rp)  int emp;  linkcb **pp,**rp; {
  linkcb *p,*r;   char *q;
   r = refal.preva->next;
   if(r == refal.nexta) return(0);

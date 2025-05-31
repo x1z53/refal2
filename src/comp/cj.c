@@ -8,6 +8,9 @@
 	for  Unix - ELF or GNU format */
 
 #include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+#include <unistd.h>
 #include "refal.def"
 
 /* BLF - for renaming add,sub,mul,div */
@@ -85,6 +88,7 @@ extern char mod_i[];   /* module name      */
 extern FILE *syslin;   /* asm file */
 extern FILE *systxt;   /* module names */
 extern short nommod;
+extern int cmpstr();
 
 struct BU_ {
 	unsigned len;
@@ -139,7 +143,7 @@ void pchose     ();
 void exit       ();
 void pchosh     ();
 /*void strcat	 ();*/
-void strncpy    ();
+/*void strncpy ();*/
 /*void strcpy	 ();*/
 int  strncmp    ();
 /*int  strlen	 ();*/

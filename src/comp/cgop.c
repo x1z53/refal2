@@ -54,7 +54,7 @@ void gopl( k, l)  char k, *l;  {
 void gsymbol(code) struct linkti *code; {
  struct _TAG *q;
  char *r;
- register i;
+ int i;
    q = (struct _TAG *) &(code->tagg);
    jbyte( q->b1 );
    jbyte( q->b2 );

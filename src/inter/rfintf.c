@@ -3,6 +3,7 @@
 /*        Last modification : 17.07.2004 (BLF)      */
 /*--------------------------------------------------*/
 #include <stdio.h>
+#include <stdlib.h>
 #include "refal.def"
 
 REFAL   refal;
@@ -11,16 +12,20 @@ static  int     rf_init=1;
 static  int     curr_size=0;
 static  linkcb  hd;
 
-linkcb *malloc();
-void   rflist();
-void   rfpexm();
+/*linkcb *malloc();*/
+void rflist();
+void rfpexm();
+void rfrun(st *);
+int  lexist (st *);
+int  lcre(st *);
+int  lgcl();
 
 void rfabe (amsg) char *amsg;{
   printf ("\n *** refal-abend *** %s",amsg);
   exit(1);
 }
 
-lincrm() {
+int lincrm() {
  linkcb *first_free, *p;
  linkcb *new_block; 
  int was_coll, n ;
@@ -50,7 +55,7 @@ printf("\nLincrm: n=%d after new_block=%lx",n,new_block);
 }
 
 /*  check a number of items in free items list */
-lrqlk (l) int l; {
+int lrqlk (l) int l; {
  linkcb *p;  int n;
    p = refal.flhead;
    for( n=0; n<l; n++ ){
@@ -60,7 +65,7 @@ lrqlk (l) int l; {
    return (TRUE);
 }
 
-lins (p,l) linkcb *p; int l; {
+int lins (p,l) linkcb *p; int l; {
  int n;  linkcb *p1,*q,*q1,*r;
    if (l<1) return (1);
     q1 = refal.flhead;
@@ -82,7 +87,7 @@ lins (p,l) linkcb *p; int l; {
     return (TRUE);
 }
 
-slins (p,k) linkcb *p; int k; {
+int slins (p,k) linkcb *p; int k; {
    while( !lrqlk(k) ){
       if( !lincrm() )
          { refal.upshot=3; return(FALSE); }
@@ -90,7 +95,7 @@ slins (p,k) linkcb *p; int k; {
    return( lins(p,k) );
 }
 
-linskd (ast,f)  st *ast;  char *f; {
+int linskd (ast,f)  st *ast;  char *f; {
  linkcb *p,*q,*r;
    if( !lexist(ast) )
        rfabe ("Linskd: process doesn't exist still");
@@ -321,7 +326,7 @@ void rftpl(r,p,q)  linkcb *p, *r, *q; {
 }
 
 /*  copy expression and add it to nessecary place  */
-lcopy (r,p,q)  linkcb *r,*p,*q; {
+int lcopy (r,p,q)  linkcb *r,*p,*q; {
  linkcb *r1,*f,*f0,*f1,*lastb = NULL;
    f = refal.flhead;
    f0 =  p->next;
@@ -360,7 +365,7 @@ lcopy (r,p,q)  linkcb *r,*p,*q; {
    return(1);
 }
 
-lexist (ast) st *ast; {
+int lexist (ast) st *ast; {
  REFAL *p;
    p = &refal;
    do {
@@ -370,7 +375,7 @@ lexist (ast) st *ast; {
    return(FALSE);
 }
  
-lcre (ast) st *ast; {
+int lcre (ast) st *ast; {
  st *q;   linkcb *flhead1;
    if( rf_init ==1) rfinit();
    if( lexist(ast) )
@@ -423,7 +428,7 @@ UP:   if (h == root) return;
       goto MRK;
 }
 
-lgcl() {
+int lgcl() {
  st *p;  int was_coll;
  linkcb *pzero, *q, *r, *flhead1, *p1, hdvar, *hd;
    hd = &hdvar;

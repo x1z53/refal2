@@ -3,6 +3,7 @@
 /*       Last modification : 02.09.90       */
 /*------------------------------------------*/
 #include <stdio.h>
+#include <string.h>
 #include "refal.def"
 extern REFAL refal;
 
@@ -13,11 +14,13 @@ static FILE *f;
 static FILE *uniput[fmax]={NULL,NULL,NULL,NULL,NULL};
 static FILE *uniget[fmax]={NULL,NULL,NULL,NULL,NULL};
 
+int  slins(linkcb *, int);
+
 static void open_() {
  linkcb *p;
  short j;
  char namf[41],c,s[2];
- register i;
+ int i;
    for (i=0; i<40; i++)  namf[i] = '\0';
    p = refal.preva->next;
    if (p->tag != TAGO) goto NEOT;

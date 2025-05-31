@@ -3,12 +3,21 @@
 /*     Last edition date : 11.03.2005 (BLF) */
 /*------------------------------------------*/
 #include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
 #include "refal.def"
 #include "debug.def"
 
 extern REFAL refal;
 void  print_parm();
 void  parm_menue();
+
+void rfpexm(char *, linkcb *, linkcb *);
+void rfdel (linkcb *, linkcb *);
+void rfcanc(st *);
+void rfrun(st *);
+void rftermm();
+int  lincrm();
 
 void rfdbg (s_st) st *s_st; {
   /* read task for debugging */
@@ -695,7 +704,7 @@ get_arg() {
 }
 static int
 get_det() { 
- register i;
+ int i;
     det_table = last_det;
     while( det_table != NULL ){
        if( strncmp(det_table->det_id,arg,l_arg)==0) {
@@ -1009,7 +1018,7 @@ get_arg()  {
 
 static int
 get_det() { 
-  register i;
+  int i;
     det_table = last_det;
     while( det_table != NULL ){
        if (strncmp(det_table->det_id,arg,l_arg)==0 ){ 

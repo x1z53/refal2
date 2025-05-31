@@ -90,7 +90,12 @@ static linkcb *x,*y,*nach,*kon,*Xn,*Yn,*Xk,*Yk;
 static int dl,Xdl,Ydl;
 static char zn,Xzn,Yzn;
 
-static dajch() {
+void rftpl(linkcb *, linkcb *, linkcb *);
+int  slins(linkcb *, int);
+int  lins(linkcb *, int);
+int  lrqlk(int);
+
+static int dajch() {
    zn = '+';
    kon = y->prev;
    if (x == kon) {  /* pustoe chislo */
@@ -111,7 +116,7 @@ static dajch() {
    return (TRUE);
 }
                             
-static dajarg() {
+static int dajarg() {
    x = refal.preva->next;
    if (x->tag != TAGLB) return (FALSE);
    y = x->info.codep;
@@ -134,7 +139,7 @@ static void obmen() {
     c=Xzn; Xzn=Yzn; Yzn=c;
 }
 
-static xmy() {  /*  if X < Y then TRUE  ( po modulju) */
+static int xmy() {  /*  if X < Y then TRUE  ( po modulju) */
    if (Xdl < Ydl) return (TRUE);
    if (Xdl > Ydl) return (FALSE);
    for (x=Xn, y=Yn; (x != Xk->next); x = x->next, y = y->next) {

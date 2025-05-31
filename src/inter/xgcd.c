@@ -27,6 +27,8 @@ extern REFAL refal;
 #define r1  r[0]
 #define r2  r[1]               
 
+void rftpl(linkcb *, linkcb *, linkcb *);
+
 static void norm(X,dl,j)     /*  normaliz. posledov. makrocifr */
  linkcb *X; int dl,j; {      /*  X - ukaz. na konec            */
  long a,g,m,peren;  int i,ip;

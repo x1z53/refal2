@@ -88,6 +88,7 @@ void pchosx();
 void through();
 void luterm();
 void free();
+void Uns_sto();
 
 static void p504(idp,lid) char *idp; int lid; {
   pchosj("504 label", idp,lid, " is already defined");

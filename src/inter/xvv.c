@@ -16,13 +16,18 @@ static int  junp=1;
 static int  jung=1;
 static long jl;
 
+void rftpl(linkcb *, linkcb *, linkcb *);
+void rfpexm(char *, linkcb *, linkcb *);
+void rfpex(char *, linkcb *, linkcb *);
+int  slins(linkcb *, int);
+
 /* BLF void PROUT() {
 }*/
 
 static void opng_() {
  linkcb *p;
  char namf[40];
- register i;
+ int i;
    for (i=0; i<40; i++)  namf[i] = '\0';
    p = refal.preva->next;
    if (p->tag != TAGN) jl = 0;  /* jung zamenila na jl */

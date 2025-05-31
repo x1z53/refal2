@@ -6,6 +6,8 @@
 /* BLF GO -> go */
 extern char go();
 
+void rfexec(char (*)());
+
 void main() {
   rfexec(go);
 }

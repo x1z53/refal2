@@ -13,16 +13,17 @@ void putts();
 void getts();
 void move();
 void move2();	/* BLF 29.07.2004 */
+int  cmpr();
 
-static letter(unsigned char s);
-static digit(char s);
-static not(int spcpls);
+static int letter(unsigned char s);
+static int digit(char s);
+static int not(int spcpls);
 
 struct spcs{
   int  spls;
   char *svpc;
 };
-spc(pspcsp,vpc,b)
+int spc(pspcsp,vpc,b)
 /* specifier interpreter */
 struct spcs *pspcsp;
 char *vpc;
@@ -115,7 +116,7 @@ SPCL:
  goto SPCNXT;
 } /*             end      spc          */
 
-static letter(s) unsigned char s; {
+static int letter(s) unsigned char s; {
    if( (s>='A' && s<='Z')  || /* A..Z     */
        (s>='a' && s<='z') ||  /* a..z     */
        (s>127 && s<176) ||    /* €..Ÿ ..¯ */
@@ -123,12 +124,12 @@ static letter(s) unsigned char s; {
    return(0);
 }
 
-static digit(s) char s; {
+static int digit(s) char s; {
    if( s>='0' && s<='9' )  return(1);
    return(0);
 }
 
-static not(spcpls) int spcpls; {
+static int not(spcpls) int spcpls; {
    if (spcpls == TRUE) return(FALSE);
    return(TRUE);
 }
@@ -226,7 +227,7 @@ int i;
 }
 */
 
-cmpr(n,p1,p2) int n; char *p1,*p2; {
+int cmpr(n,p1,p2) int n; char *p1,*p2; {
  int i;
    for (i = 1;i <= n;i++){
       if (*p1 != *p2) return(0);

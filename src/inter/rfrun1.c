@@ -3,6 +3,7 @@
 /*      Last edition date: 20.02.2005 (BLF)    */
 /*---------------------------------------------*/
 #include <stdio.h>
+#include <stdlib.h>
 #include "refal.def"
 			
 extern REFAL refal;    
@@ -68,8 +69,20 @@ static linkcb *f0,*f1,*f;
 static char *vpca;           /* additional vpc  */
 static char (*fptr)();
 static int i,n,m;
-sav *malloc();
+/*sav *malloc();*/
 long time();
+
+void putts(struct ts *, linkcb **, linkcb **, linkcb **);
+void rfabe(char *);
+void getjs(struct wjs *, linkcb **, linkcb **, int *, unsigned char **);
+void link(linkcb *, linkcb *);
+int  lexist(st *);
+int  spc(struct wjs *, char *, linkcb *);
+
+void getts();
+void putjs();
+void move();
+int  cmpr();
 
 void rfrun(ast)    st *ast;/* adress of current state table */  {
  /* dynamic area DSA */

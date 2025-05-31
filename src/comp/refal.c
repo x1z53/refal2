@@ -3,6 +3,8 @@
 /*       Last modification : 29.05.2005 (BLF) */
 /*--------------------------------------------*/
 #include <stdio.h>
+#include <string.h>
+#include <unistd.h>
 #include "refal.def"                          
 /* #define  STTIME */
 
@@ -44,10 +46,10 @@ void pchosa();
 void gsp();
 void scan();
 void oshibka();
-void strncpy();
+/*void strncpy();*/
 void sfop_w();
 int strncmp();
-int strlen();
+/*int strlen();*/
 int atoi();
 int index_x();
 int specif();
@@ -64,6 +66,8 @@ unsigned jwhere();
          /* the recovery of the next element of sentence   */
 char *genlbl();  /* kras: wmesto struct u */
 char *spref();   /* kras: wmesto struct u */
+
+void sfclose();
 
 struct linkt {
    int tagg;
@@ -129,7 +133,7 @@ char regnom[]="000";
 int rn[]={1,2,3,4,5,6,7,8,9,0};
 
 /* BLF */
-char vers_i[]="Refal-2  version 0.2.3-20190618 (c) Refal-2 Team";
+char vers_i[]="Refal-2  version 0.2.3-20190617 (c) Refal-2 Team";
 
 char mod_i[13];   /* 8+4+1 (xxxxxxxx.yyy0) */
 int lbl_leng;
@@ -237,10 +241,10 @@ char *take(s1) char *s1; { /* take a next word from the string */
    cur=beg+len;
    return (p1);
 }
-main ()  {
+int main ()  {
  int argc; char *argv[3];
 #else
-main (argc,argv) int argc; char *argv[];  {
+int main (argc,argv) int argc; char *argv[];  {
 #endif
 char parm[40];
  int i,j,temp;
@@ -550,7 +554,7 @@ void translate(char *str, char *class1) { /* L,D,* - classification procedure */
      if ( (j == 35) || (j == 95) ) *(class1+i) = 'L';
    }
 }
-komm() {
+int komm() {
  char *k;
    for(k=c; (*k ==' ') || (*k =='\t') ; k++);
    if(*k =='*') return 1;
@@ -581,7 +585,7 @@ RDCARD1:
 }
 /*    directive label and keyword extraction    */
 void lblkey(pr) int pr; {
- register i;
+ int i;
  short l, delta, fixm1;
   if(pr==0) {
 LK1:
@@ -843,7 +847,7 @@ SCNRET: ;
 void gsp(n) char n; {
   if (left_part == 1)  jbyte(n);
 }
-specif (tail) char tail; {    /* specifier compiler */
+int specif (tail) char tail; {    /* specifier compiler */
  int  neg;
  char id[255];
  int lid;
@@ -1105,7 +1109,7 @@ EQU1: pch130();
 void pch130() {
    pchosh("130 invalid record format");
 }
-get_csmb(code,id,lid)  /* procedure read multiple symbol */
+int get_csmb(code,id,lid)  /* procedure read multiple symbol */
  struct linkt *code;
  char   id[40];
  int    *lid;
@@ -1158,7 +1162,7 @@ char convert(cm) char cm; {
 #endif
    return ( cm );
 }
-get_id(id,lid)  char id[];  int *lid; {        /* read identifier */
+int get_id(id,lid)  char id[];  int *lid; {        /* read identifier */
  int i;
    for (i = 0; i<40; id[i++] = ' ');
    if (class[m] != 'L') return(0);
@@ -1175,7 +1179,7 @@ get_id(id,lid)  char id[];  int *lid; {        /* read identifier */
 ID0:return(1);
 }
       /*read external identifier */
-get_idm(id,lid)  char id[40];  int *lid; {
+int get_idm(id,lid)  char id[40];  int *lid; {
    if (class[m] != 'L') return(0);
    id[0] = convert(c[m]);
    for ( *lid = 1; *lid < 8; (*lid)++ ) {

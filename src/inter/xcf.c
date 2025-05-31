@@ -3,15 +3,23 @@
 /*       Last edition date : 02.09.90       */
 /*------------------------------------------*/
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include "refal.def"
 extern REFAL refal;
 
 typedef char *adr;
 short func_n=0;
 adr *func_f=NULL;
-adr *malloc();
-adr *realloc();
+/*adr *malloc();*/
+/*adr *realloc();*/
 char rfcnv(char cm);
+
+void rftpl(linkcb *, linkcb *, linkcb *);
+void rfdel(linkcb *, linkcb *);
+int  lins(linkcb *, int);
+int  lrqlk(int);
+int  lincrm();
 
 static void ftochar_() {
  union {char b[2];short w;} d;

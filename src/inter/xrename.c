@@ -4,6 +4,8 @@
 /*-----------------------------------------*/
 #include "refal.def"
 #include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
 extern REFAL refal;
 
 static void unlnk_() {

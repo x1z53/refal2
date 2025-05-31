@@ -3,11 +3,20 @@
 /*       Last modification : 03.07.2004 (BLF) */
 /*--------------------------------------------*/
 #include <stdio.h>
+#include <stdlib.h>
 #include "refal.def"
 extern REFAL refal;
 
-st *malloc();
+/*void *malloc();*/
 void (*dba)(st*)=NULL;
+
+void rfrun(st *);
+void rftpl(linkcb *, linkcb *, linkcb *);
+void rfcanc(st *);
+int  slins(linkcb *, int);
+int  lins(linkcb *, int);
+int  lcre(st *);
+int  lincrm();
 
 static void appl_() {
  st *s_st, *upst;

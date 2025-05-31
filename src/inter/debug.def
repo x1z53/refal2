@@ -90,7 +90,7 @@ static FILE *wrfile;
 /*==================================*/
 #endif
 
-char   *malloc(); 
+void   *malloc(size_t); 
 static void   init_det_flags();
 static void   getpf();
 static void   get_arg();

@@ -5,8 +5,18 @@
 /*      Last edition date : 02.09.90        */
 /*------------------------------------------*/
 #include <stdio.h> 
+#include <string.h> 
 #include "refal.def"
 extern REFAL refal;
+
+void rftpl(linkcb *, linkcb *, linkcb *);
+void rfdel(linkcb *, linkcb *);
+void rfabe (char *);
+int  lcopy(linkcb *, linkcb *, linkcb *);
+int  slins(linkcb *, int);
+int  lins(linkcb *, int);
+int  lrqlk(int);
+int  lincrm();
 
 static void p1_() {
  linkcb *p; long l;
@@ -54,7 +64,7 @@ long atol();
 static void numb_() {
  linkcb *p,*pz,*p1;
  char str[12],zn;
- register i; long l;
+ int i; long l;
    p = refal.preva->next;
    zn = p->info.infoc;
    pz=p;
@@ -97,7 +107,7 @@ G_L_B char numb = '\122';    static void (*numb_1)() = numb_;
 static void symb_() {
  linkcb *p,*pz,*p1;
  char str[12],zn;
- register i; long l; int j;
+ int i; long l; int j;
    p = refal.preva->next;
    zn = p->info.infoc;
    pz=p;

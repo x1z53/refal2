@@ -3,10 +3,18 @@
 /*        Last modification : 14.09.91      */
 /*------------------------------------------*/
 #include <stdio.h>
+#include <stdlib.h>
 #include "refal.def"
 
 static st s_st;             
 extern char go();
+
+void rfdbg(st *);
+void rftermm();
+void rfinit();
+int  linskd(st *, char (*)());
+int  lcre(st *);
+int  lincrm();
 
 void main () { 
   rfinit();

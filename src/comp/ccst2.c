@@ -157,7 +157,7 @@ void pch406()
  { pchosa ( "406 in left part missing variable ", v[i].ci ); }
 
           /*    attempt to extract left support group     */
-lsg_p() {
+int lsg_p() {
 LSG_:  n++;
       if ( n == n2 ) goto GEN_LE;
       if ( x[n].t != t_lb )  goto LSG1;
@@ -192,7 +192,7 @@ GEN_LE:
 }
 
 /*        attempt to extract right support group     */
-rsg_p() {
+int rsg_p() {
 RSG_:  n--;
       if ( n == n1 )  goto GEN_RE;
       if ( x[n].t != t_rb )  goto RSG1;
@@ -229,7 +229,7 @@ GEN_RE:
 
 /*    check ortogonality of this sentence against left part */
 
-ortgn(n1, n2) short n1, n2; {
+int ortgn(n1, n2) short n1, n2; {
   short n;
   short i;
   int res;
